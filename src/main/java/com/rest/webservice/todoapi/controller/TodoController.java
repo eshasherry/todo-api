@@ -1,6 +1,7 @@
 package com.rest.webservice.todoapi.controller;
 
 import com.rest.webservice.todoapi.entity.Todo;
+import com.rest.webservice.todoapi.exception.TodoNotFoundException;
 import com.rest.webservice.todoapi.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,9 @@ public class TodoController {
     }
     @GetMapping("users/{username}/todo/{id}")
     public Todo getTodo(@PathVariable String username, @PathVariable int id){
-        return todoRepository.findTodosByUsernameAndId(username, id);
+        Todo todo = todoRepository.findTodosByUsernameAndId(username, id);
+        if(todo == null )throw new TodoNotFoundException("Todo not found with id: "+id);
+        return todo;
     }
     @PutMapping("users/{username}/todo/{id}")
     public Todo updateTodo(@PathVariable String username, @PathVariable int id, @RequestBody Todo todo){
